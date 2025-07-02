@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Hub - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a0dad; /* Deep Purple */
+            --secondary-color: #ff69b4; /* Hot Pink */
+            --accent-color: #8a2be2; /* Blue Violet */
+            --text-color: #ffffff;
+            --header-bg: rgba(0, 0, 0, 0.3); /* Slightly transparent dark for header */
+            --main-bg-card: rgba(255, 255, 255, 0.1); /* Frosted glass effect for main cards */
+            --button-bg: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            --button-hover-bg: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            --footer-height: 70px; /* Define footer height for padding adjustments */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e003a, #5b0060, #9f00a5); /* Same vibrant background */
+            color: var(--text-color);
+            box-sizing: border-box;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            /* Adjusted padding-bottom to account for mini-player AND footer */
+            padding-bottom: calc(80px + var(--footer-height));
+        }
+
+        /* Subtle background animation */
+        body::before {
+            content: '';
+            position: fixed; /* Fixed so it doesn't scroll with content */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><filter id="f1" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="0.005 0.005" numOctaves="2" seed="0" result="turb"/><feDiffuseLighting in="turb" lightingColor="white" surfaceScale="10" result="light"><feDistantLight azimuth="235" elevation="60"/></feDiffuseLighting><feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1" k2="0" k3="0" k4="0"/></filter></defs><rect width="100%" height="100%" fill="none" filter="url(%23f1)"/></svg>') no-repeat center center/cover;
+            opacity: 0.1; /* Very subtle */
+            animation: backgroundPan 30s linear infinite alternate;
+            z-index: -1; /* Send it behind everything else */
+        }
+
+        @keyframes backgroundPan {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        header {
+            background-color: var(--header-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between; /* Adjusted to space logo and welcome text */
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100; /* Ensure header stays on top */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header .logo-container {
+            cursor: pointer; /* Indicate it's clickable */
+            display: flex;
+            align-items: center;
+        }
+
+        header .logo-container img {
+            max-width: 45px; /* Smaller logo for header */
+            height: auto;
+            display: block;
+        }
+
+        .welcome-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        main {
+            flex-grow: 1; /* Allows main content to take up available space */
+            padding: 30px 20px;
+            max-width: 1200px; /* Max width for content */
+            width: 100%; /* Ensure it uses full width on smaller screens */
+            margin: 20px auto; /* Center content */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 2.2em;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .songs-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive grid */
+            gap: 25px; /* Space between cards */
+            justify-content: center; /* Center grid items horizontally */
+            padding: 20px 0; /* Padding inside the main content area */
+        }
+
+        .song-card {
+            background-color: var(--main-bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer; /* Indicates it's clickable */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes play button to bottom */
+        }
+
+        .song-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .song-card img {
+            max-width: 100%;
+            border-radius: 10px; /* Slightly rounded corners for album art */
+            margin-bottom: 10px;
+            aspect-ratio: 1 / 1; /* Keep image square */
+            object-fit: cover; /* Cover the area without distortion */
+        }
+
+        .song-card h3 {
+            font-size: 1.1em;
+            color: var(--text-color);
+            margin: 5px 0;
+            font-weight: 600;
+            white-space: nowrap; /* Prevent title from wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis if title overflows */
+        }
+
+        .song-card p {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px; /* Adjusted margin for play count */
+            white-space: nowrap; /* Prevent artist from wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis if artist overflows */
+        }
+
+        .song-card .play-count {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px; /* Space above button */
+        }
+
+        .song-card .play-button {
+            background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 10px 0; /* Full width button */
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .song-card .play-button:hover {
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-color));
+            transform: scale(1.02);
+        }
+
+        /* Specific styles for playing/paused buttons */
+        .song-card .play-button.playing {
+            background: linear-gradient(to right, #4CAF50, #8BC34A); /* Greenish gradient */
+            cursor: default; /* No hover effect when playing */
+        }
+
+        .song-card .play-button.paused {
+            background: linear-gradient(to right, #FFC107, #FF9800); /* Orangeish gradient */
+            cursor: pointer;
+        }
+
+        /* Hide the old audio player container, as it's replaced by the mini-player */
+        .audio-player-container {
+            display: none !important;
+        }
+
+        /* NEW STYLES FOR MINI-PLAYER */
+        .mini-player-container {
+            position: fixed;
+            bottom: var(--footer-height); /* Position above the new footer */
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Darker, more prominent background */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
+            z-index: 200; /* Higher z-index to ensure it's on top */
+            transform: translateY(100%); /* Start hidden below the screen */
+            transition: transform 0.4s ease-out; /* Smooth slide-up transition */
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 15px; /* Space between elements */
+            box-sizing: border-box;
+            cursor: pointer; /* Indicate it's clickable */
+        }
+
+        .mini-player-container.active {
+            transform: translateY(0); /* Slide up to be visible */
+        }
+
+        .mini-player-poster {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .mini-player-info {
+            flex-grow: 1; /* Allows info to take available space */
+            color: var(--text-color);
+            overflow: hidden; /* Hide overflow for text ellipsis */
+        }
+
+        .mini-player-info h4 {
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--secondary-color); /* Highlight song title */
+        }
+
+        .mini-player-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mini-player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .mini-player-control-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .mini-player-control-button:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .mini-player-control-button svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Hide Mini-Player Progress Bar */
+        .mini-player-container .progress-bar-container {
+            display: none;
+        }
+
+        /* --- Full Screen Player Modal --- */
+        .full-screen-player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f001f, #2d0030, #4f0051); /* Darker, immersive background */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300; /* Above mini-player */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .full-screen-player-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .full-screen-player-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+            width: 450px; /* Max width for content */
+            height: 650px; /* Max height for content */
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4); /* Semi-transparent background for content area */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative; /* For close button positioning */
+        }
+
+        .full-screen-player-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 10px;
+            font-size: 1.5em;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .full-screen-player-close:hover {
+            color: var(--secondary-color);
+            transform: rotate(90deg);
+        }
+
+        .full-screen-player-poster {
+            width: 80%; /* Adjust as needed */
+            max-width: 350px;
+            aspect-ratio: 1 / 1;
+            border-radius: 15px;
+            object-fit: cover;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .full-screen-player-info {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .full-screen-player-info h2 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--secondary-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .full-screen-player-info p {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .full-screen-player-controls {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Full Screen Progress Bar Container */
+        .full-screen-progress-container {
+            width: 100%;
+            height: 8px; /* Thicker progress bar */
+            border-radius: 4px;
+            position: relative;
+            display: block;
+        }
+
+        #fullScreenProgressBar {
+            width: 100%;
+            height: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent; /* Make the base input transparent */
+            cursor: pointer;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Full Screen Progress Bar - Webkit Track (the main bar) */
+        #fullScreenProgressBar::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 100%;
+            /* Use a gradient that fills up to the thumb, and is transparent afterwards */
+            background: linear-gradient(to right, 
+                        var(--secondary-color) 0%, 
+                        var(--accent-color) var(--progress-value, 0%), 
+                        rgba(255, 255, 255, 0.15) var(--progress-value, 0%), 
+                        rgba(255, 255, 255, 0.15) 100%);
+            border-radius: 4px;
+        }
+
+        /* Full Screen Progress Bar - Webkit Thumb */
+        #fullScreenProgressBar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 16px; /* Larger thumb */
+            width: 16px;
+            background: var(--text-color);
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease;
+            margin-top: -4px; /* Adjust to center thumb vertically */
+        }
+
+        #fullScreenProgressBar:active::-webkit-slider-thumb {
+            transform: scale(1.2); /* Expand thumb when dragging */
+            cursor: grabbing;
+        }
+
+        /* Full Screen Progress Bar - Firefox Track */
+        #fullScreenProgressBar::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: transparent; /* Make base track transparent */
+            border-radius: 4px;
+        }
+
+        /* Full Screen Progress Bar - Firefox Progress (the filled part) */
+        #fullScreenProgressBar::-moz-range-progress {
+            background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        /* Full Screen Progress Bar - Firefox Thumb */
+        #fullScreenProgressBar::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--text-color);
+            border-radius: 50%;
+            cursor: grab;
+            border: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease;
+        }
+
+        #fullScreenProgressBar:active::-moz-range-thumb {
+            transform: scale(1.2);
+            cursor: grabbing;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex; /* Ensure it's shown */
+        }
+
+        .playback-buttons {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 10px;
+            /* Added for favorite button positioning */
+            width: 100%; 
+            justify-content: center;
+            position: relative; /* For absolute positioning of favorite button */
+        }
+
+        .playback-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .playback-button:hover {
+            color: var(--secondary-color);
+            transform: scale(1.15);
+        }
+
+        .playback-button.main-play-pause svg {
+            width: 60px; /* Larger main play button */
+            height: 60px;
+        }
+        .playback-button svg {
+            width: 35px; /* Size for prev/next */
+            height: 35px;
+        }
+
+        /* Styles for the Favorite button */
+        #favoriteButton {
+            position: absolute;
+            right: 0; /* Position to the right of the playback controls */
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        #favoriteButton svg {
+            width: 30px; /* Size for favorite icon */
+            height: 30px;
+            color: rgba(255, 255, 255, 0.7); /* Default color */
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        #favoriteButton.favorited svg {
+            fill: var(--secondary-color); /* Fill when favorited */
+            color: var(--secondary-color); /* Outline color when favorited */
+        }
+
+        #favoriteButton:hover svg {
+            color: var(--secondary-color);
+            transform: scale(1.15);
+        }
+
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 90%;
+            margin-top: 20px;
+        }
+
+        .volume-container svg {
+            width: 25px;
+            height: 25px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #volumeSlider {
+            flex-grow: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        #volumeSlider::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-color)); /* Volume fill */
+            height: 6px;
+            border-radius: 3px;
+        }
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--text-color);
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+            margin-top: -4px; /* Center thumb on track */
+        }
+
+        #volumeSlider::-moz-range-track {
+            background: rgba(255, 255, 255, 0.2);
+            height: 6px;
+            border-radius: 3px;
+        }
+        #volumeSlider::-moz-range-progress {
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-color));
+            height: 6px;
+            border-radius: 3px;
+        }
+        #volumeSlider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--text-color);
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+        }
+
+        /* NEW FOOTER STYLES */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--footer-height);
+            background-color: rgba(0, 0, 0, 0.85); /* Same as mini-player for consistency */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
+            z-index: 250; /* Between mini-player and full-screen player */
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .app-footer .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8em;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .app-footer .nav-item:hover {
+            color: var(--secondary-color);
+        }
+
+        .app-footer .nav-item svg {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 5px;
+            transition: fill 0.2s ease;
+        }
+
+        .app-footer .nav-item:hover svg {
+            fill: var(--secondary-color);
+        }
+
+        /* --- Language Selection Modal Styles --- */
+        .language-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 400; /* Above everything else */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .language-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .language-modal-content {
+            background: linear-gradient(135deg, #1e003a, #5b0060);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .language-modal-content h2 {
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .language-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .language-button {
+            background: var(--main-bg-card);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .language-button:hover {
+            background: var(--accent-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+
+        /* Responsive adjustments */
+        /* Tablet & smaller desktop screens */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: row; /* Keep header elements in a row for space */
+                justify-content: space-between; /* Space out logo and welcome */
+                padding: 10px 15px;
+            }
+            .welcome-text {
+                font-size: 1em; /* Slightly smaller on tablets */
+            }
+            main {
+                padding: 20px 15px; /* Adjust padding for tablet screens */
+                margin: 15px auto; /* Reduce top/bottom margin */
+            }
+            .section-header h2 {
+                font-size: 1.8em;
+            }
+            /* Song card grid adjustments for tablets */
+            .songs-grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* More cards in a row */
+                gap: 20px;
+            }
+            .song-card {
+                padding: 12px;
+            }
+            .song-card h3 {
+                font-size: 1em;
+            }
+            .song-card p {
+                font-size: 0.85em;
+            }
+            .song-card .play-button {
+                padding: 8px 0;
+            }
+
+            /* Mini-player adjustments for tablets */
+            .mini-player-container {
+                padding: 8px 15px;
+                gap: 10px;
+            }
+            .mini-player-poster {
+                width: 50px;
+                height: 50px;
+            }
+            .mini-player-info h4 {
+                font-size: 1em;
+            }
+            .mini-player-info p {
+                font-size: 0.85em;
+            }
+            .mini-player-control-button svg {
+                width: 26px;
+                height: 26px;
+            }
+            body {
+                /* Adjust padding-bottom for smaller mini-player and footer */
+                padding-bottom: calc(70px + var(--footer-height));
+            }
+
+            /* Full screen player adjustments for tablets */
+            .full-screen-player-content {
+                width: 90%;
+                height: auto;
+                max-width: 400px;
+                max-height: 90vh; /* Use viewport height */
+                padding: 15px;
+            }
+            .full-screen-player-poster {
+                width: 70%;
+                max-width: 300px;
+                margin-bottom: 20px;
+            }
+            .full-screen-player-info h2 {
+                font-size: 1.8em;
+            }
+            .full-screen-player-info p {
+                font-size: 1.1em;
+            }
+            .playback-buttons {
+                gap: 20px;
+            }
+            .playback-button.main-play-pause svg {
+                width: 50px;
+                height: 50px;
+            }
+            .playback-button svg {
+                width: 30px;
+                height: 30px;
+            }
+            #favoriteButton svg {
+                width: 25px; /* Adjust favorite icon size for tablets */
+                height: 25px;
+            }
+            .volume-container {
+                width: 95%;
+            }
+
+            /* Footer adjustments for tablets */
+            .app-footer .nav-item svg {
+                width: 26px;
+                height: 26px;
+            }
+        }
+
+        /* Mobile portrait mode */
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 10px; /* Smaller header padding */
+            }
+            header .logo-container img {
+                max-width: 40px; /* Even smaller logo on mobile */
+            }
+            .welcome-text {
+                font-size: 0.9em; /* Smaller welcome text */
+            }
+            main {
+                padding: 15px 10px; /* Minimal padding for main content */
+                margin: 10px auto; /* Smaller margin */
+            }
+            .section-header h2 {
+                font-size: 1.6em;
+            }
+            /* Song card grid adjustments for mobile */
+            .songs-grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Two cards per row typically */
+                gap: 15px;
+            }
+            .song-card {
+                padding: 10px;
+                border-radius: 10px;
+            }
+            .song-card img {
+                border-radius: 8px;
+            }
+            .song-card h3 {
+                font-size: 0.95em;
+                margin: 3px 0;
+            }
+            .song-card p {
+                font-size: 0.8em;
+                margin-bottom: 5px; /* Adjusted margin for play count */
+            }
+            .song-card .play-count {
+                font-size: 0.75em;
+                margin-bottom: 10px;
+            }
+            .song-card .play-button {
+                font-size: 0.8em;
+                padding: 7px 0;
+                border-radius: 6px;
+            }
+
+            /* Mini-player adjustments for smallest screens */
+            .mini-player-container {
+                padding: 6px 10px;
+                gap: 8px;
+            }
+            .mini-player-poster {
+                width: 45px;
+                height: 45px;
+            }
+            .mini-player-info h4 {
+                font-size: 0.9em;
+            }
+            .mini-player-info p {
+                font-size: 0.8em;
+            }
+            .mini-player-control-button svg {
+                width: 24px;
+                height: 24px;
+            }
+            body {
+                padding-bottom: calc(65px + var(--footer-height)); /* Further adjust padding */
+            }
+
+            /* Full screen player adjustments for mobile */
+            .full-screen-player-content {
+                width: 95%;
+                padding: 10px;
+            }
+            .full-screen-player-poster {
+                width: 80%;
+                margin-bottom: 15px;
+            }
+            .full-screen-player-info h2 {
+                font-size: 1.5em;
+            }
+            .full-screen-player-info p {
+                font-size: 1em;
+            }
+            .playback-buttons {
+                gap: 15px;
+            }
+            .playback-button.main-play-pause svg {
+                width: 45px;
+                height: 45px;
+            }
+            .playback-button svg {
+                width: 28px;
+                height: 28px;
+            }
+            #favoriteButton svg {
+                width: 22px; /* Adjust favorite icon size for mobile */
+                height: 22px;
+            }
+            .time-display {
+                font-size: 0.8em;
+            }
+            .volume-container {
+                width: 100%;
+                gap: 5px;
+            }
+            .volume-container svg {
+                width: 20px;
+                height: 20px;
+            }
+            #volumeSlider::-webkit-slider-thumb,
+            #volumeSlider::-moz-range-thumb {
+                width: 12px;
+                height: 12px;
+            }
+
+            /* Footer adjustments for mobile */
+            .app-footer .nav-item {
+                font-size: 0.75em;
+            }
+            .app-footer .nav-item svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container" id="logoContainer">
+            <img src="logo.png" alt="MelodyStream Logo">
+        </div>
+        <span class="welcome-text" id="welcomeMessage"></span>
+    </header>
+
+    <main>
+        <section id="topTrendingSongsContainer">
+            <div class="section-header">
+                <h2>Top 20 Trending Songs</h2>
+            </div>
+            <div class="songs-grid-container" id="topTrendingSongsGrid">
+                <p style="text-align: center; color: rgba(255,255,255,0.7);">Loading trending songs...</p>
+            </div>
+        </section>
+
+        ---
+
+        <section id="allSongsContainer">
+            <div class="section-header">
+                <h2>All Songs</h2>
+            </div>
+            <div class="songs-grid-container" id="allSongsGrid">
+                <p style="text-align: center; color: rgba(255,255,255,0.7);">Loading all songs...</p>
+            </div>
+        </section>
+
+        <div class="audio-player-container" id="audioPlayerContainer">
+            <p>Now Playing: <span id="currentSongTitle">None</span> by <span id="currentSongArtist">None</span></p>
+            <audio id="audioPlayer" controls></audio>
+        </div>
+    </main>
+
+    <div class="mini-player-container" id="miniPlayerContainer">
+        <img src="https://via.placeholder.com/60/6a0dad/ffffff?text=No+Art" alt="Album Art" class="mini-player-poster" id="miniPlayerPoster">
+        <div class="mini-player-info">
+            <h4 id="miniPlayerTitle">Select a Song</h4>
+            <p id="miniPlayerArtist">Artist</p>
+        </div>
+        <div class="mini-player-controls">
+            <button id="miniPlayerPlayPause" class="mini-player-control-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="progress-bar-container">
+            <input type="range" id="miniPlayerProgressBar" value="0" min="0" max="100">
+        </div>
+        <audio id="primaryAudioPlayer" src="" preload="metadata"></audio>
+    </div>
+
+    <div class="full-screen-player-modal" id="fullScreenPlayerModal">
+        <div class="full-screen-player-content">
+            <button class="full-screen-player-close" id="fullScreenCloseButton">X</button>
+
+            <img src="https://via.placeholder.com/350/6a0dad/ffffff?text=No+Art" alt="Album Art" class="full-screen-player-poster" id="fullScreenPoster">
+            
+            <div class="full-screen-player-info">
+                <h2 id="fullScreenTitle"></h2>
+                <p id="fullScreenArtist"></p>
+            </div>
+
+            <div class="full-screen-player-controls">
+                <div class="full-screen-progress-container">
+                    <input type="range" id="fullScreenProgressBar" value="0" min="0" max="100">
+                </div>
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="durationTime">0:00</span>
+                </div>
+                
+                <div class="playback-buttons">
+                    <button class="playback-button" id="prevButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                        </svg>
+                    </button>
+                    <button class="playback-button main-play-pause" id="fullScreenPlayPause">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </button>
+                    <button class="playback-button" id="nextButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/>
+                        </svg>
+                    </button>
+                    <button class="playback-button" id="favoriteButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="volume-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.81 5 3.54 5 6.71s-2.11 5.9-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <a href="home.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="search.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <span>Search</span>
+        </a>
+        <a href="profile.html" class="nav-item" id="profileNavLink">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </footer>
+
+    <div class="language-modal-overlay" id="languageModalOverlay">
+        <div class="language-modal-content">
+            <h2>Select Your Preferred Language</h2>
+            <div class="language-buttons">
+                <button class="language-button" data-lang="Hindi">Hindi</button>
+                <button class="language-button" data-lang="Punjabi">Punjabi</button>
+                <button class="language-button" data-lang="Bhojpuri">Bhojpuri</button>
+                <button class="language-button" data-lang="English">English</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Firebase Configuration - Your actual credentials are here
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzdm1Qjgxqb6v8tYUJ4d5KTTgfYLjDbe0",
+            authDomain: "rkchat-2319f.firebaseapp.com",
+            projectId: "rkchat-2319f",
+            storageBucket: "rkchat-2319f.firebasestorage.app",
+            messagingSenderId: "1023660188375",
+            appId: "1:1023660188375:web:5e1884a6d1b5aaadbb8692"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const topTrendingSongsGrid = document.getElementById('topTrendingSongsGrid');
+        const allSongsGrid = document.getElementById('allSongsGrid');
+        const logoContainer = document.getElementById('logoContainer'); // Get the logo container
+
+        // Mini-player elements
+        const miniPlayerContainer = document.getElementById('miniPlayerContainer');
+        const miniPlayerPoster = document.getElementById('miniPlayerPoster');
+        const miniPlayerTitle = document.getElementById('miniPlayerTitle');
+        const miniPlayerArtist = document.getElementById('miniPlayerArtist');
+        const miniPlayerPlayPause = document.getElementById('miniPlayerPlayPause');
+
+        // Full Screen Player elements
+        const fullScreenPlayerModal = document.getElementById('fullScreenPlayerModal');
+        const fullScreenCloseButton = document.getElementById('fullScreenCloseButton');
+        const fullScreenPoster = document.getElementById('fullScreenPoster');
+        const fullScreenTitle = document.getElementById('fullScreenTitle');
+        const fullScreenArtist = document.getElementById('fullScreenArtist');
+        const fullScreenProgressBar = document.getElementById('fullScreenProgressBar'); 
+        const currentTimeSpan = document.getElementById('currentTime');
+        const durationTimeSpan = document.getElementById('durationTime');
+        const fullScreenPlayPause = document.getElementById('fullScreenPlayPause');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const favoriteButton = document.getElementById('favoriteButton'); // New: Favorite button
+
+        // The *single* audio element that handles playback for both mini and full players
+        const primaryAudioPlayer = document.getElementById('primaryAudioPlayer');
+
+        // Footer navigation elements
+        const profileNavLink = document.getElementById('profileNavLink');
+
+        // Language Modal elements
+        const languageModalOverlay = document.getElementById('languageModalOverlay');
+        const languageButtons = document.querySelectorAll('.language-button');
+
+        let isPlaying = false; // To track play/pause state
+        let currentSongIndex = -1; // Index of the currently playing song in the fetchedSongs array
+        let allAvailableSongs = []; // Array to store ALL fetched songs (from all languages)
+        let displayedSongs = []; // Array of songs currently displayed (filtered by language)
+        let currentUser = null; // Store current Firebase user object
+        let userPreferredLanguage = null; // Store the user's preferred language
+        let userFavoriteSongs = []; // New: Array to store favorite song IDs for the current user
+
+        // Helper function to format time (e.g., 0:00)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        // Check authentication state
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                console.log("User is signed in on home page:", user.email);
+                let username = user.displayName;
+
+                try {
+                    const userDocRef = db.collection('users').doc(user.uid);
+                    const userDoc = await userDocRef.get();
+
+                    if (userDoc.exists) {
+                        username = userDoc.data().username || user.email;
+                        userPreferredLanguage = userDoc.data().preferredLanguage;
+                        userFavoriteSongs = userDoc.data().favoriteSongs || []; // Load favorite songs
+
+                        if (!userPreferredLanguage) {
+                            // First time user, show language selection modal
+                            showLanguageSelectionModal();
+                        } else {
+                            // User has a preferred language, proceed to load songs
+                            console.log("User preferred language:", userPreferredLanguage);
+                            welcomeMessage.textContent = `Welcome, ${username.split('@')[0]}!`;
+                            await fetchAllSongs(); // Fetch all songs once
+                            filterAndDisplaySongs(userPreferredLanguage); // Filter and display based on preference
+                        }
+                    } else {
+                        // User document doesn't exist (should not happen if registered via form, but good fallback)
+                        username = user.email;
+                        showLanguageSelectionModal(); // Prompt for language
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data or language:", error);
+                    username = user.email;
+                    // Fallback: If error, assume no language set and show modal
+                    showLanguageSelectionModal();
+                }
+            } else {
+                console.log("No user signed in, redirecting to index.html");
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Event listener for the Profile nav link (now directly redirects to profile.html)
+        if (profileNavLink) {
+            profileNavLink.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default link behavior
+                window.location.href = 'profile.html'; // Direct redirect
+            });
+        }
+
+        // --- Language Selection Modal Functions ---
+        function showLanguageSelectionModal() {
+            languageModalOverlay.classList.add('active');
+            // Disable main content interaction if desired
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function hideLanguageSelectionModal() {
+            languageModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event listener for the logo to open language modal
+        if (logoContainer) {
+            logoContainer.addEventListener('click', () => {
+                showLanguageSelectionModal();
+            });
+        }
+
+        languageButtons.forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const selectedLang = event.target.dataset.lang;
+                if (currentUser) {
+                    try {
+                        await db.collection('users').doc(currentUser.uid).update({
+                            preferredLanguage: selectedLang
+                        });
+                        userPreferredLanguage = selectedLang;
+                        console.log("Preferred language saved:", selectedLang);
+                        hideLanguageSelectionModal();
+                        // No need to fetchAllSongs again if already fetched on initial load
+                        filterAndDisplaySongs(userPreferredLanguage); // Display songs based on new preference
+                    } catch (error) {
+                        console.error("Error saving preferred language:", error);
+                        // alert("Failed to save language preference. Please try again."); // Removed alert
+                    }
+                }
+            });
+        });
+
+        // Function to fetch ALL songs from Firestore (regardless of language)
+        async function fetchAllSongs() {
+            try {
+                const songsCollection = await db.collection('songs')
+                                                .where('isPublished', '==', true)
+                                                .get();
+                allAvailableSongs = []; // Clear previous songs
+                songsCollection.forEach(doc => {
+                    allAvailableSongs.push({ id: doc.id, ...doc.data() });
+                });
+                console.log("All songs fetched:", allAvailableSongs.length);
+            }
+            catch (error) {
+                console.error("Error fetching all songs:", error);
+                // alert("Failed to load all songs data. Please try again."); // Removed alert
+            }
+        }
+
+        // Function to filter and display songs based on selected language
+        function filterAndDisplaySongs(language) {
+            topTrendingSongsGrid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7);">Loading trending songs...</p>';
+            allSongsGrid.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.7);">Loading all songs...</p>';
+
+            // Filter songs based on the selected language
+            displayedSongs = allAvailableSongs.filter(song => 
+                song.language && song.language.toLowerCase() === language.toLowerCase()
+            );
+            console.log(`Displaying ${displayedSongs.length} songs for language: ${language}`);
+
+            if (displayedSongs.length === 0) {
+                topTrendingSongsGrid.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7);">No trending songs found for ${language}.</p>`;
+                allSongsGrid.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7);">No songs found for ${language}.</p>`;
+                return;
+            }
+
+            // --- Display Top 20 Trending Songs ---
+            const trendingSongs = [...displayedSongs]
+                                .sort((a, b) => (b.playCount || 0) - (a.playCount || 0))
+                                .slice(0, 20);
+            renderSongsToGrid(trendingSongs, topTrendingSongsGrid);
+            if (trendingSongs.length === 0) {
+                topTrendingSongsGrid.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7);">No trending songs found for ${language}. Play some songs to make them trend!</p>`;
+            }
+
+            // --- Display All Songs (filtered by language) ---
+            const allFilteredSongs = [...displayedSongs].sort((a, b) => (b.uploadedAt?.toDate() || 0) - (a.uploadedAt?.toDate() || 0)); // Sort by upload date for "All Songs"
+            renderSongsToGrid(allFilteredSongs, allSongsGrid);
+            if (allFilteredSongs.length === 0) {
+                allSongsGrid.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7);">No songs found for ${language}.</p>`;
+            }
+            
+            attachPlayButtonListeners(); // Re-attach listeners after rendering
+            updateAllPlayButtonStates(); // Update button states after rendering songs
+        }
+
+        // Helper function to render song cards into a specified grid
+        function renderSongsToGrid(songs, gridElement) {
+            gridElement.innerHTML = ''; // Clear existing content
+            songs.forEach(song => {
+                // Find the original index from the allAvailableSongs array for consistent playback
+                const originalIndex = allAvailableSongs.findIndex(s => s.id === song.id);
+                const playCount = song.playCount ? song.playCount.toLocaleString() : '0';
+                // Determine initial button text and class based on current playback state
+                let buttonText = 'Play Now';
+                let buttonClass = '';
+                if (currentSongIndex !== -1 && allAvailableSongs[currentSongIndex]?.id === song.id) {
+                    buttonText = isPlaying ? 'Playing Now' : 'Paused';
+                    buttonClass = isPlaying ? 'playing' : 'paused';
+                }
+
+                const cardHtml = `
+                    <div class="song-card">
+                        <img src="${song.posterUrl || 'https://via.placeholder.com/150/6a0dad/ffffff?text=No+Art'}" alt="${song.title || 'Unknown Title'} Album Art">
+                        <h3>${song.title || 'Unknown Title'}</h3>
+                        <p>${song.artist || 'Unknown Artist'}</p>
+                        <span class="play-count">Plays: ${playCount}</span>
+                        <button class="play-button ${buttonClass}" data-song-index="${originalIndex}" data-song-id="${song.id}">
+                            ${buttonText}
+                        </button>
+                    </div>
+                `;
+                gridElement.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+
+        // Function to attach event listeners to play buttons
+        function attachPlayButtonListeners() {
+            // Remove existing listeners to prevent duplicates
+            document.querySelectorAll('.play-button').forEach(button => {
+                button.removeEventListener('click', handlePlayButtonClick);
+            });
+
+            // Add new listeners
+            document.querySelectorAll('.play-button').forEach(button => {
+                button.addEventListener('click', handlePlayButtonClick);
+            });
+        }
+
+        function handlePlayButtonClick(event) {
+            const songIndex = parseInt(event.target.dataset.songIndex); 
+            console.log("Attempting to play song at original index:", songIndex, allAvailableSongs[songIndex]?.title);
+
+            // If the clicked song is already the current song, toggle play/pause
+            if (currentSongIndex === songIndex) {
+                togglePlayPause();
+            } else {
+                // Otherwise, play the new song
+                playSong(songIndex);
+            }
+        }
+
+        // Function to update the text and class of all "Play Now" buttons
+        function updateAllPlayButtonStates() {
+            document.querySelectorAll('.play-button').forEach(button => {
+                const songId = button.dataset.songId;
+                if (currentSongIndex !== -1 && allAvailableSongs[currentSongIndex]?.id === songId) {
+                    if (isPlaying) {
+                        button.textContent = 'Playing Now';
+                        button.classList.add('playing');
+                        button.classList.remove('paused');
+                    } else {
+                        button.textContent = 'Paused';
+                        button.classList.add('paused');
+                        button.classList.remove('playing');
+                    }
+                } else {
+                    button.textContent = 'Play Now';
+                    button.classList.remove('playing', 'paused');
+                }
+            });
+        }
+
+
+        // --- Core Playback Logic ---
+        function playSong(index) {
+            if (index < 0 || index >= allAvailableSongs.length) {
+                console.warn("Invalid song index:", index);
+                return;
+            }
+
+            // Pause current song if playing before loading new one
+            if (!primaryAudioPlayer.paused) {
+                primaryAudioPlayer.pause();
+            }
+
+            currentSongIndex = index;
+            const song = allAvailableSongs[currentSongIndex]; // Play from allAvailableSongs
+
+            // Update mini-player content
+            miniPlayerTitle.textContent = song.title;
+            miniPlayerArtist.textContent = song.artist;
+            miniPlayerPoster.src = song.posterUrl || 'https://via.placeholder.com/60/6a0dad/ffffff?text=No+Art';
+
+            // Update full-screen player content
+            fullScreenTitle.textContent = song.title;
+            fullScreenArtist.textContent = song.artist;
+            fullScreenPoster.src = song.posterUrl || 'https://via.placeholder.com/350/6a0dad/ffffff?text=No+Art';
+            updateFavoriteButtonState(); // Update favorite button state for the new song
+
+            // Set the audio source and play
+            primaryAudioPlayer.src = song.audioUrl;
+            primaryAudioPlayer.load(); // Load the new audio source
+            primaryAudioPlayer.play().then(() => {
+                isPlaying = true;
+                updatePlayPauseButtons();
+                updateAllPlayButtonStates(); // Update card button state
+                miniPlayerContainer.classList.add('active'); // Ensure mini-player is visible
+                incrementPlayCount(song.id); // Increment play count on successful play
+            }).catch(error => {
+                console.error("Error attempting to play audio:", error);
+                // alert("Playback could not start automatically. Please click the play button directly (on mini-player or full-screen player) to begin."); // Removed alert
+                isPlaying = false;
+                updatePlayPauseButtons();
+                updateAllPlayButtonStates(); // Update card button state
+            });
+        }
+
+        // Function to increment play count in Firestore
+        async function incrementPlayCount(songId) {
+            if (!songId) {
+                console.warn("No song ID provided to increment play count.");
+                return;
+            }
+            try {
+                const songRef = db.collection('songs').doc(songId);
+                await songRef.update({
+                    playCount: firebase.firestore.FieldValue.increment(1)
+                });
+                console.log(`Play count incremented for song ID: ${songId}`);
+                // After incrementing, re-fetch all songs and re-display to ensure UI is updated
+                await fetchAllSongs(); 
+                if (userPreferredLanguage) { // Only re-filter if a language is already set
+                    filterAndDisplaySongs(userPreferredLanguage);
+                }
+            } catch (error) {
+                console.error("Error incrementing play count:", error);
+            }
+        }
+
+        function playNextSong() {
+            if (allAvailableSongs.length === 0) return;
+            const nextIndex = (currentSongIndex + 1) % allAvailableSongs.length;
+            playSong(nextIndex);
+        }
+
+        function playPreviousSong() {
+            if (allAvailableSongs.length === 0) return;
+            const prevIndex = (currentSongIndex - 1 + allAvailableSongs.length) % allAvailableSongs.length;
+            playSong(prevIndex);
+        }
+
+        // Function to update play/pause button icons (for both mini and full screen)
+        function updatePlayPauseButtons() {
+            const playIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+            const pauseIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+
+            miniPlayerPlayPause.innerHTML = isPlaying ? pauseIcon : playIcon;
+            fullScreenPlayPause.innerHTML = isPlaying ? pauseIcon : playIcon;
+        }
+
+        // --- Mini-Player Event Listeners ---
+        miniPlayerPlayPause.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent this click from bubbling up to miniPlayerContainer
+            togglePlayPause();
+        });
+
+        miniPlayerContainer.addEventListener('click', (event) => {
+            // Check if the click target is NOT the play/pause button
+            if (event.target.id !== 'miniPlayerPlayPause' && !miniPlayerPlayPause.contains(event.target)) {
+                 // Only open full screen if a song is loaded (primaryAudioPlayer has a src)
+                if (primaryAudioPlayer.src && primaryAudioPlayer.src !== window.location.href) { // Ensure it's not empty or just the page URL
+                    openFullScreenPlayer();
+                } else {
+                    // alert("Please select a song to play first."); // Removed alert
+                }
+            }
+        });
+
+        // --- Full Screen Player Event Listeners ---
+        fullScreenCloseButton.addEventListener('click', () => {
+            fullScreenPlayerModal.classList.remove('active');
+        });
+
+        fullScreenPlayPause.addEventListener('click', () => {
+            togglePlayPause();
+        });
+
+        prevButton.addEventListener('click', () => {
+            playPreviousSong();
+        });
+
+        nextButton.addEventListener('click', () => {
+            playNextSong();
+        });
+
+        fullScreenProgressBar.addEventListener('input', () => {
+            if (!isNaN(primaryAudioPlayer.duration)) {
+                const seekTime = (fullScreenProgressBar.value / 100) * primaryAudioPlayer.duration;
+                primaryAudioPlayer.currentTime = seekTime;
+            }
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            primaryAudioPlayer.volume = volumeSlider.value;
+        });
+
+        // --- Favorite Button Logic ---
+        favoriteButton.addEventListener('click', async () => {
+            if (!currentUser || currentSongIndex === -1) {
+                // alert("Please log in and select a song to favorite."); // Removed alert
+                return;
+            }
+
+            const currentSongId = allAvailableSongs[currentSongIndex].id;
+            const userDocRef = db.collection('users').doc(currentUser.uid);
+
+            try {
+                if (userFavoriteSongs.includes(currentSongId)) {
+                    // Song is already favorited, so remove it
+                    await userDocRef.update({
+                        favoriteSongs: firebase.firestore.FieldValue.arrayRemove(currentSongId)
+                    });
+                    userFavoriteSongs = userFavoriteSongs.filter(id => id !== currentSongId);
+                    console.log(`Removed ${currentSongId} from favorites.`);
+                } else {
+                    // Song is not favorited, so add it
+                    await userDocRef.update({
+                        favoriteSongs: firebase.firestore.FieldValue.arrayUnion(currentSongId)
+                    });
+                    userFavoriteSongs.push(currentSongId);
+                    console.log(`Added ${currentSongId} to favorites.`);
+                }
+                updateFavoriteButtonState(); // Update button appearance immediately
+            } catch (error) {
+                console.error("Error updating favorite songs:", error);
+                // alert("Failed to update favorite status. Please try again."); // Removed alert
+            }
+        });
+
+        function updateFavoriteButtonState() {
+            if (currentSongIndex === -1 || !currentUser) {
+                favoriteButton.classList.remove('favorited');
+                return;
+            }
+            const currentSongId = allAvailableSongs[currentSongIndex].id;
+            if (userFavoriteSongs.includes(currentSongId)) {
+                favoriteButton.classList.add('favorited');
+            } else {
+                favoriteButton.classList.remove('favorited');
+            }
+        }
+
+
+        // --- Audio Element Event Listeners (for primaryAudioPlayer) ---
+        primaryAudioPlayer.addEventListener('play', () => {
+            isPlaying = true;
+            updatePlayPauseButtons();
+            updateAllPlayButtonStates(); // Update card button state
+        });
+
+        primaryAudioPlayer.addEventListener('pause', () => {
+            isPlaying = false;
+            updatePlayPauseButtons();
+            updateAllPlayButtonStates(); // Update card button state
+        });
+
+        primaryAudioPlayer.addEventListener('timeupdate', () => {
+            if (!isNaN(primaryAudioPlayer.duration)) {
+                const progress = (primaryAudioPlayer.currentTime / primaryAudioPlayer.duration) * 100;
+                fullScreenProgressBar.value = progress; // Only update full screen progress
+                // Update CSS variable for Webkit track styling
+                fullScreenProgressBar.style.setProperty('--progress-value', `${progress}%`);
+                currentTimeSpan.textContent = formatTime(primaryAudioPlayer.currentTime);
+            }
+        });
+
+        primaryAudioPlayer.addEventListener('loadedmetadata', () => {
+            if (!isNaN(primaryAudioPlayer.duration)) {
+                durationTimeSpan.textContent = formatTime(primaryAudioPlayer.duration);
+                // Set initial volume for slider
+                volumeSlider.value = primaryAudioPlayer.volume;
+                // Initialize progress bar style
+                fullScreenProgressBar.style.setProperty('--progress-value', `0%`);
+            }
+        });
+
+        primaryAudioPlayer.addEventListener('ended', () => {
+            isPlaying = false;
+            updatePlayPauseButtons();
+            updateAllPlayButtonStates(); // Update card button state
+            fullScreenProgressBar.value = 0; // Reset full screen progress
+            fullScreenProgressBar.style.setProperty('--progress-value', `0%`); // Reset CSS variable
+            playNextSong(); // Auto-play next song
+        });
+
+        // Handle errors during audio loading/playback
+        primaryAudioPlayer.addEventListener('error', (e) => {
+            console.error("Audio playback error:", e);
+            let errorMessage = "An unknown audio error occurred.";
+            switch (e.target.error.code) {
+                case e.target.error.MEDIA_ERR_ABORTED:
+                    errorMessage = "Audio playback aborted.";
+                    break;
+                case e.target.error.MEDIA_ERR_NETWORK:
+                    errorMessage = "A network error caused the audio download to fail.";
+                    break;
+                case e.target.error.MEDIA_ERR_DECODE:
+                    errorMessage = "The audio playback was aborted due to a corruption problem or because the media used features your browser does not support.";
+                    break;
+                case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                    errorMessage = "The audio could not be loaded, either because the server or network failed or because the format is not supported.";
+                    break;
+                default:
+                    break;
+            }
+            // alert(`Error playing song: ${errorMessage}. Please try another song or check your internet connection.`); // Removed alert
+            isPlaying = false;
+            updatePlayPauseButtons();
+            updateAllPlayButtonStates(); // Update card button state
+        });
+
+
+        // --- Helper Functions ---
+        function togglePlayPause() {
+            if (primaryAudioPlayer.paused) {
+                // Only try to play if a source is set
+                if (primaryAudioPlayer.src && primaryAudioPlayer.src !== window.location.href) {
+                    primaryAudioPlayer.play().catch(error => {
+                        console.error("Error attempting to play audio:", error);
+                        // This catch block handles cases where .play() might fail, e.g., due to browser autoplay policies
+                        // alert("Playback could not start automatically. Please click the play button directly to begin."); // Removed alert
+                        isPlaying = false;
+                        updatePlayPauseButtons();
+                        updateAllPlayButtonStates(); // Update card button state
+                    });
+                } else {
+                    // alert("No song selected to play."); // Removed alert
+                }
+            } else {
+                primaryAudioPlayer.pause();
+            }
+        }
+
+        function openFullScreenPlayer() {
+            // Update full screen player details again in case it was updated via mini-player
+            if (currentSongIndex !== -1) {
+                const song = allAvailableSongs[currentSongIndex];
+                fullScreenTitle.textContent = song.title;
+                fullScreenArtist.textContent = song.artist;
+                fullScreenPoster.src = song.posterUrl || 'https://via.placeholder.com/350/6a0dad/ffffff?text=No+Art';
+                volumeSlider.value = primaryAudioPlayer.volume; // Ensure volume reflects slider
+                updateFavoriteButtonState(); // Update favorite button state when opening full screen
+            }
+            fullScreenPlayerModal.classList.add('active');
+            updatePlayPauseButtons(); // Ensure correct icon on opening
+        }
+
+        // Initial setup for play/pause button icon on load
+        updatePlayPauseButtons();
+        volumeSlider.value = primaryAudioPlayer.volume; // Set initial volume slider position
+    </script>
+</body>
+</html>
