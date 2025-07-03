@@ -1249,7 +1249,7 @@
                         filterAndDisplaySongs(userPreferredLanguage); // Display songs based on new preference
                     } catch (error) {
                         console.error("Error saving preferred language:", error);
-                        // alert("Failed to save language preference. Please try again."); // Removed alert
+                        console.warn("Failed to save language preference. Please try again.");
                     }
                 }
             });
@@ -1269,7 +1269,7 @@
             }
             catch (error) {
                 console.error("Error fetching all songs:", error);
-                // alert("Failed to load all songs data. Please try again."); // Removed alert
+                console.warn("Failed to load all songs data. Please try again.");
             }
         }
 
@@ -1426,7 +1426,7 @@
                 incrementPlayCount(song.id); // Increment play count on successful play
             }).catch(error => {
                 console.error("Error attempting to play audio:", error);
-                // alert("Playback could not start automatically. Please click the play button directly (on mini-player or full-screen player) to begin."); // Removed alert
+                console.warn("Playback could not start automatically. Please click the play button directly (on mini-player or full-screen player) to begin.");
                 isPlaying = false;
                 updatePlayPauseButtons();
                 updateAllPlayButtonStates(); // Update card button state
@@ -1489,7 +1489,7 @@
                 if (primaryAudioPlayer.src && primaryAudioPlayer.src !== window.location.href) { // Ensure it's not empty or just the page URL
                     openFullScreenPlayer();
                 } else {
-                    // alert("Please select a song to play first."); // Removed alert
+                    console.warn("No song selected to play.");
                 }
             }
         });
@@ -1525,7 +1525,7 @@
         // --- Favorite Button Logic ---
         favoriteButton.addEventListener('click', async () => {
             if (!currentUser || currentSongIndex === -1) {
-                // alert("Please log in and select a song to favorite."); // Removed alert
+                console.warn("Please log in and select a song to favorite.");
                 return;
             }
 
@@ -1551,7 +1551,7 @@
                 updateFavoriteButtonState(); // Update button appearance immediately
             } catch (error) {
                 console.error("Error updating favorite songs:", error);
-                // alert("Failed to update favorite status. Please try again."); // Removed alert
+                console.warn("Failed to update favorite status. Please try again.");
             }
         });
 
@@ -1631,7 +1631,7 @@
                 default:
                     break;
             }
-            // alert(`Error playing song: ${errorMessage}. Please try another song or check your internet connection.`); // Removed alert
+            console.warn(`Error playing song: ${errorMessage}. Please try another song or check your internet connection.`);
             isPlaying = false;
             updatePlayPauseButtons();
             updateAllPlayButtonStates(); // Update card button state
@@ -1646,13 +1646,13 @@
                     primaryAudioPlayer.play().catch(error => {
                         console.error("Error attempting to play audio:", error);
                         // This catch block handles cases where .play() might fail, e.g., due to browser autoplay policies
-                        // alert("Playback could not start automatically. Please click the play button directly to begin."); // Removed alert
+                        console.warn("Playback could not start automatically. Please click the play button directly to begin.");
                         isPlaying = false;
                         updatePlayPauseButtons();
                         updateAllPlayButtonStates(); // Update card button state
                     });
                 } else {
-                    // alert("No song selected to play."); // Removed alert
+                    console.warn("No song selected to play.");
                 }
             } else {
                 primaryAudioPlayer.pause();
